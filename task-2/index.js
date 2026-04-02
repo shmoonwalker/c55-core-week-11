@@ -18,6 +18,14 @@ if (!category) {
   process.exit(1);
 }
 const questions = await fetchQuestions(category);
+if (questions.length === 0) {
+  console.log(
+    chalk.red(
+      "Failed to fetch questions. Please check your API key and try again.",
+    ),
+  );
+  process.exit(1);
+}
 
 let score = 0;
 

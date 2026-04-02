@@ -11,10 +11,11 @@ const openai = new OpenAI({
 export async function fetchQuestions(category) {
   const prompt = `Generate 10 questions , and each questions should include only 4 answer which is only one of them is correct in the ${category} category for each questions from start till end the difficulty of the questions should increase . Reply in a valid and parsable JSON with the following structure:
 
-{ "questions": "string", "answer_list": [{ "answer": "answer1":is_correct, true/false},{ "answer": "answer2":is_correct, true/false},{ "answer": "answer3":is_correct, true/false},...], }
+[{ "questions": "string", "answer_list": [{ "answer": "answer1":is_correct, true/false},{ "answer": "answer2":is_correct, true/false},{ "answer": "answer3":is_correct, true/false},...], }]
 
 do not return anything else besides the JSON  and make sure the JSON is valid and parsable dont be markdown.`;
-  const response = await openai.chat.completions.create({
+  try {
+    const response = await openai.chat.completions.create({
     model: "openai/gpt-4o-mini",
     messages: [{ role: "user", content: prompt }],
   });
@@ -29,4 +30,8 @@ do not return anything else besides the JSON  and make sure the JSON is valid an
     return new Question(item.question, answers);
   });
   return questions;
+  } catch (error) {
+    console.error("Error fetching questions:", error);
+    return [];
+  }
 }
